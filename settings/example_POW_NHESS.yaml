@@ -37,6 +37,7 @@ scenarios:
   growth_factors: [5, 10, 15, 20, 25, 30]
   alpha: 0.11
   beta: 8.0
+  max_volume: 50000 # optional cap on flow volume (m3); blank = no cap
   hbar: true          # Hbar constraint on inundation cross sections
   num_procs: 16       # cores for each Grfin run (your old runs used 16)
   recompute: false    # true: rerun scenarios that already have outputs

@@ -5,6 +5,7 @@ outputs/*
 # Personal settings (keep the example)
 settings/*
 !settings/example_POW_NHESS.yaml
+!settings/template.yaml
 
 # Input data: only CSV files are uploaded (rasters and shapefiles from Zenodo)
 data/*

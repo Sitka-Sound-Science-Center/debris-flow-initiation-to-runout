@@ -5,10 +5,14 @@
 #   - growth zones: the growth zone raster for that transition slope angle
 #   - growth volume: length growth (growth factor, m3 per m of growth zone)
 #     plus the initiation points as point sources
+#   - optional maximum flow volume (max_volume), which caps volumes summed at
+#     tributary junctions (Reid et al., 2025, sec. 4.2.2.6.2)
 #   - inundation: custom volume-area coefficients (alpha, beta), Hbar
 # The drainage network from the stream step is reused (not recomputed).
 #
 # Each run gets its own folder: scenarios_<name>/slope<angle>_growth<factor>/
+# (with _vmax<volume> added when max_volume is set, so capped and uncapped runs
+# are kept separately)
 # Runs go one at a time (Grfin shares files next to the DEM between runs).
 #
 # Author: Nicolas Mathews
@@ -21,6 +25,12 @@ from model.grfin import run_grfin
 
 
 # -- Scenarios -- #
+
+def _max_volume(cfg):
+    """Maximum flow volume (m3) from the settings, or None for no cap."""
+    v = cfg["scenarios"].get("max_volume")
+    return None if v is None else float(v)
+
 
 def _scenario_settings(cfg, dem, points_csv, zone_raster, angle, gf, name):
     """Grfin settings for one scenario (dem = the DEM path this run uses)."""
@@ -45,6 +55,7 @@ def _scenario_settings(cfg, dem, points_csv, zone_raster, angle, gf, name):
                 "growth_zone_raster": Path(zone_raster).resolve(),
             },
             "growth_volumes": {
+                "max_volume": _max_volume(cfg),
                 "point_source_volumes_file": points_csv,
                 "length_growth": {
                     "length_growth_factor": float(gf),
@@ -77,7 +88,9 @@ def run_scenarios(cfg, points_csv, growth_zones, name):
     results = {}
     combos = [(a, g) for a in s["transition_slope_angles"] for g in s["growth_factors"]]
     for n, (angle, gf) in enumerate(combos, start=1):
-        run_dir = base_dir / f"slope{angle:g}_growth{gf:g}"
+        vmax = _max_volume(cfg)
+        run_dir = base_dir / (f"slope{angle:g}_growth{gf:g}"
+                              + (f"_vmax{vmax:g}" if vmax is not None else ""))
         inundation = run_dir / f"{dem.stem}_inundation.tif"
         results[(angle, gf)] = inundation
         label = f"{name}, slope {angle:g}, growth {gf:g}"
