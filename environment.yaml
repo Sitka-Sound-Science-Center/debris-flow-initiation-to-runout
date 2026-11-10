@@ -1,0 +1,14 @@
+name: debris-flow
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - rasterio
+  - geopandas
+  - scikit-learn
+  - pyyaml
+  - ipykernel

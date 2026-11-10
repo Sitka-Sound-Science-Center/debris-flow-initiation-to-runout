@@ -1,0 +1,25 @@
+# Model outputs (keep the folder, ignore its contents)
+outputs/*
+!outputs/.gitkeep
+
+# Personal settings (keep the example)
+settings/*
+!settings/example_POW.yaml
+
+# Input data: only CSV files are uploaded (rasters and shapefiles from Zenodo)
+data/*
+!data/*.csv
+
+# Rasters anywhere else in the repo
+*.tif
+*.tif.aux.xml
+
+# Python and Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

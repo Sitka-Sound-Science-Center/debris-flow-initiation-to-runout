@@ -1,0 +1,12 @@
+Soil ID,TNF Code,Series Name,Mean ?' (°),Mean c' (kPa),Gs,e,dry uw,sat uw,Mean ? (kN/m3)
+1,KAT,Karta,36,7,2.71,0.89,14.1,18.7,19
+2,,Shelikof,25,11,,,,,13
+3,SIT,Sitka,39,12,2.74,4.16,5.2,13.1,13
+4,TOK,Tokeen,36,5,2.71,1.48,10.7,16.6,16
+5,ULL,Ulloa,34,6,2.69,1.59,10.2,16.2,16
+6,WAD,Wadleigh,37,9,2.76,0.8,15,19.4,19
+7,,Marine Clay,33,15,,,,,21
+8,MIT,Mitkof,33,15,2.79,1.47,11.1,16.9,16
+9,KUP,Kupreanof,38,9,2.73,1.58,10.4,16.4,17
+10,TRA,Traitors,36,10,2.86,1.45,11.5,17.3,16
+11,TOL,Tolstoi,36,7,2.68,1.41,10.9,16.6,17
