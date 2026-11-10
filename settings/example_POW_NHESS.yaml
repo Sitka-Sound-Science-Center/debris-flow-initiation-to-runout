@@ -1,0 +1,88 @@
+# This settings file corresponds with output folder "outputs/POW2026_20261110_second_verification" and is used for the second verification run of the POW2026 debris-flow initiation and runout model.
+
+# Analysis Options
+options:
+  calibrate_runout_to_inventory: true # true: calibrate to inventory | false: do not calibrate
+
+# Paths
+paths:
+  dem: data/POW2026_5m.tif # path to the DEM file
+  soil_id: data/POW2026_soil_id.tif # path to the soil ID raster file
+  soil_depth: data/POW2026_soil_depth.tif # path to the soil depth raster file
+  twi: data/POW2026_5m_topographic_index.tif # path to the TWI raster file
+  twi_saturation_relationship: data/twi_rinderer_2014.csv # path to the TWI-saturation relationship CSV file
+  soil_lookup_table: data/soil_properties_lookup_table.csv # path to the soil parameters lookup table CSV file
+  inventory_points: data/TNF_initiation_POW2026.shp # path to the inventory initiation points shapefile (vector type: points)
+  inventory_areas: data/POW2026_TNF_areas_rasterized.tif # path to the inventory areas shapefile (vector type: polygons)
+  inventory_volumes_grfin: data/POW2026_TNF_initiation_BC_007percent.csv # inventory initiation volumes for Grfin (x, y, volume; no header)
+  watershed: data/POW2026_huc14_2.tif # path to the watershed shapefile (vector type: polygons)
+  modeled_points_override: data/POW2026_5m_soil_series_strength_4.9kparoots.csv # optional: use these modeled initiation points instead of the Python initiation output (leave blank to use Python)
+  output_directory: outputs/POW2026_20261110_second_verification # path to the output directory where results will be saved
+
+# Initiation Parameters
+initiation:
+  recompute: false   # true: rerun initiation | false: reuse existing initiation_points.csv if present
+  root_cohesion: 4.9 # root cohesion (kPa)
+  colluvium_depth_max: 1.5 # upper limit for colluvium depth (m)
+  gamma_w: 9.81 # unit weight of water (kN/m^3)
+  # Optional: Uniform Soil Parameter (if not using soil lookup table and soil ID raster).
+  # If defined, these values will override the soil lookup table and soil ID raster.
+  phi_uniform:  # uniform friction angle (degrees)
+  coh_uniform:  # uniform cohesion (kPa)
+  gamma_uniform:  # uniform unit weight (kN/m^3)
+
+# Runout Parameters (if only one value is defined for both transitions slope and growth factor, watershed calibration will not be performed)
+scenarios:
+  transition_slope_angles: [15, 20, 25]
+  growth_factors: [5, 10, 15, 20, 25, 30]
+  alpha: 0.11
+  beta: 8.0
+  hbar: true          # Hbar constraint on inundation cross sections
+  num_procs: 16       # cores for each Grfin run (your old runs used 16)
+  recompute: false    # true: rerun scenarios that already have outputs
+  num_procs: 16        # cores per run; keep parallel_runs x num_procs <= your core count
+
+# -- Stream Network (Grfin DRAINAGE tool) -- #
+streams:
+  dem_neighborhood_m: 10
+  min_curvature: 0.02
+  min_concav_area_m2: 200
+  min_drainage_area_m2: 200
+  num_procs: 8
+  recompute: false
+
+# -- Growth Zones -- #
+growth_zones:
+  initiation_fraction: 0.07     # initiation volume as a fraction of full debris-flow volume (both point sets)
+  exaggeration_factor: 1.5      # extra scaling of full volumes for the exaggerated run (both point sets)
+  exaggerated_alpha1: 0.1
+  exaggerated_alpha2: 80
+  hbar: true
+  recompute: false
+
+# Calibration
+calibration:
+  default_transition_slope: 25   # used in watersheds without inventory landslides
+  default_growth_factor: 5       # used in watersheds without inventory landslides
+
+# Initiation Validation (ROC / AUC)
+validation:
+  run: true
+  depth_options: [modeled, 0.5, 1.0, 1.5]    # 'modeled' = soil depth raster; numbers = uniform depth (m)
+  saturation_options: [0.5, modeled, 1.0]    # 'modeled' = TWI-based; numbers = uniform saturation ratio
+  reference: [modeled, modeled]              # [depth, saturation] of the reference model
+  slope_threshold: 25          # background points only from slopes >= this (deg)
+  filter_inventory: false      # true: only inventory points on slopes >= threshold
+  buffer_radius_m: 10          # buffer around inventory points
+  buffer_background: false     # true: same buffer around background points
+  exclusion_distance_m: 20     # min distance between background and inventory points
+  background_points: 5000      # per draw
+  draws: 20
+  fs_cap: 100                  # replaces infinite FS (zero depth)
+  random_seed: 1
+
+# Export Options
+export:
+  initiation_table: true    # true: export initiation points CSV | false: do not export
+  source_areas: true        # initiation area raster (1 = unstable, 0 = stable)
+  fs_map: true              # factor of safety raster
