@@ -13,11 +13,11 @@ paths:
   twi_saturation_relationship: data/twi_rinderer_2014.csv # path to the TWI-saturation relationship CSV file
   soil_lookup_table: data/soil_properties_lookup_table.csv # path to the soil parameters lookup table CSV file
   inventory_points: data/TNF_initiation_POW2026.shp # path to the inventory initiation points shapefile (vector type: points)
-  inventory_areas: data/POW2026_TNF_areas_rasterized.tif # path to the inventory areas shapefile (vector type: polygons)
+  inventory_areas: data/tongass_landslide_areas_meters_filtered_fixed_HL_aspect_POW2026.shp # path to the inventory areas shapefile (vector type: polygons)
   inventory_volumes_grfin: data/POW2026_TNF_initiation_BC_007percent.csv # inventory initiation volumes for Grfin (x, y, volume; no header)
-  watershed: data/POW2026_huc14_2.tif # path to the watershed shapefile (vector type: polygons)
+  watershed: data/POW2026_huc14_no_fields.shp # path to the watershed shapefile (vector type: polygons)
   modeled_points_override:  # optional: use these modeled initiation points instead of the Python initiation output (leave blank to use Python)
-  output_directory: outputs/POW2026_vmax50000_test # path to the output directory where results will be saved
+  output_directory: outputs/POW2026_20261111_testing_HUC_shapefile_LS_shapefile # path to the output directory where results will be saved
 
 # Initiation Parameters
 initiation:
@@ -33,8 +33,8 @@ initiation:
 
 # Runout Parameters (if only one value is defined for both transitions slope and growth factor, watershed calibration will not be performed)
 scenarios:
-  transition_slope_angles: [15] # [15, 20, 25]
-  growth_factors: [20] # [5, 10, 15, 20, 25, 30]
+  transition_slope_angles: [15, 20, 25]
+  growth_factors: [5, 10, 15, 20, 25, 30]
   alpha: 0.11
   beta: 8.0
   max_volume: 50000 # optional cap on flow volume (m3); blank = no cap
@@ -43,7 +43,7 @@ scenarios:
   recompute: false    # true: rerun scenarios that already have outputs
   num_procs: 16        # cores per run; keep parallel_runs x num_procs <= your core count
 
-# -- Stream Network (Grfin DRAINAGE tool) -- #
+# -- Stream Network (Grfin DRAINAGE tool with Default Values) -- #
 streams:
   dem_neighborhood_m: 10
   min_curvature: 0.02
@@ -65,6 +65,7 @@ growth_zones:
 calibration:
   default_transition_slope: 25   # used in watersheds without inventory landslides
   default_growth_factor: 5       # used in watersheds without inventory landslides
+  watershed_id_field: huc14    # field identifying each watershed in the polygon file; blank = one per polygon
 
 # Initiation Validation (ROC / AUC)
 validation:
