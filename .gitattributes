@@ -1,0 +1,2 @@
+# Option A: don't count notebooks at all (the .py files decide the language)
+*.ipynb linguist-detectable=false
